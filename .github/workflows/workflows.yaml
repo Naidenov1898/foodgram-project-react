@@ -29,7 +29,7 @@ jobs:
   build_push_backend_to_DockerHub:
     name: Building backend image and pushing it to Docker Hub
     runs-on: ubuntu-latest
-    needs: copy_infra_to_server
+    needs: tests
     steps:
     - uses: actions/checkout@v2
 
@@ -52,7 +52,7 @@ jobs:
   build_push_frontend_to_DockerHub:
     name: Building frontend image and pushing it to Docker Hub
     runs-on: ubuntu-latest
-    needs: copy_infra_to_server
+    needs: build_push_backend_to_DockerHub
     steps:
     - uses: actions/checkout@v2
 

@@ -9,9 +9,9 @@ from django.db.models import (CASCADE, CharField, DateTimeField, ForeignKey,
                               ImageField, ManyToManyField, Model,
                               PositiveSmallIntegerField, TextField,
                               UniqueConstraint,)
+from django.template.defaultfilters import slugify
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.template.defaultfilters import slugify
 
 User = get_user_model()
 
@@ -116,7 +116,7 @@ class Tag(Model):
     @admin.display
     def color_code(self):
         """
-        отображение цвета тега в админ панели 
+        отображение цвета тега в админ панели
         """
         return mark_safe(
             format_html(

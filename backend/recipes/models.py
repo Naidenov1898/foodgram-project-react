@@ -11,6 +11,7 @@ from django.db.models import (CASCADE, CharField, DateTimeField, ForeignKey,
                               UniqueConstraint,)
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.template.defaultfilters import slugify
 
 User = get_user_model()
 
@@ -102,29 +103,28 @@ class Tag(Model):
         verbose_name_plural = 'Тэги'
         ordering = ('name', )
 
-    @admin.display
-    def color_code(self):
-        """
-        отображение цвета тега в админ панели
-        """
-        return mark_safe(
-            format_html(
-                '<span style="color: {};">{}</span>',
-                self.color,
-                self.color,
-            )
-        )
+    def __str__(self) -> str:
+        return f'{self.name} (цвет: {self.color})'
 
     def save(self, *args, **kwargs):
         """
         превод слега в нижний регистр при сохранении
         """
-        self.slug = self.slug.lower()
+        self.slug = slugify(self)
         return super(Tag, self).save(*args, **kwargs)
 
-    def __str__(self) -> str:
-        return f'{self.name} (цвет: {self.color})'
-
+    @admin.display 
+    def color_code(self): 
+        """
+        отображение цвета тега в админ панели 
+        """
+        return mark_safe(
+            format_html(
+                '<span style="color: {};">{}</span>',
+                self.color, 
+                self.color, 
+                )
+            )
 
 class Recipe(Model):
     name = CharField(

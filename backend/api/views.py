@@ -106,7 +106,7 @@ class RecipeViewSet(ModelViewSet):
             return super().create(request, *args, **kwargs)
         except IntegrityError:
             return Response(
-                {"errors": "Такой рецепт существует! Измените название"},
+                {'errors': 'Такой рецепт существует! Измените название'},
                 HTTP_400_BAD_REQUEST
             )
 
@@ -115,7 +115,7 @@ class RecipeViewSet(ModelViewSet):
             return super().update(request, *args, **kwargs)
         except IntegrityError:
             return Response(
-                {"errors": "Такой рецепт существует! Измените название"},
+                {'errors': 'Такой рецепт существует! Измените название'},
                 HTTP_400_BAD_REQUEST
             )
 
@@ -165,7 +165,7 @@ class RecipeViewSet(ModelViewSet):
             measure_unit=F('ingredients__measurement_unit')
         ).annotate(amount_cart=Sum('amount'))
         filename = f'{user.username}_shopping_list.txt'
-        shopping_list = ("Список покупок\n")
+        shopping_list = 'Список покупок\n'
 
         for ingr in ingredients:
             shopping_list += (

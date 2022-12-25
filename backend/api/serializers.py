@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
@@ -113,21 +114,21 @@ class IngredientSerializer(ModelSerializer):
 
 
 class IngredientInRecipeSerializer(ModelSerializer):
-    id = IntegerField(source="ingredients.id")
-    name = CharField(source="ingredients.name", read_only=True)
+    id = IntegerField(source='ingredients.id')
+    name = CharField(source='ngredients.name', read_only=True)
     measurement_unit = CharField(
-        source="ingredients.measurement_unit", read_only=True
+        source='ingredients.measurement_unit', read_only=True
     )
 
     class Meta:
         model = IngredientAmount
         fields = (
-            "id",
-            "name",
-            "measurement_unit",
-            "amount",
+            'id',
+            'name',
+            'measurement_unit',
+            'amount',
         )
-        read_only_fields = ("name", "measurement_unit")
+        read_only_fields = ('name', 'measurement_unit')
         validators = [
             UniqueTogetherValidator(
                 queryset=IngredientAmount.objects.all(),
@@ -246,13 +247,13 @@ class RecipeCreateSerializer(ModelSerializer):
             ingr_obj = ingredient_item['id']
             if ingr_obj in validated_ingredients_obj:
                 raise ValidationError(
-                    f'"{ingr_obj}" уже добавлен в рецепт'
+                    f'{ingr_obj} уже добавлен в рецепт'
                 )
             amount = ingredient_item.get('amount')
             if type(amount) is not int or (amount < 1 or amount > 10000):
                 raise ValidationError(
-                    (f'Некорректное количество "{amount}" '
-                     f'ингредиента "{ingr_obj}". Допустимы только '
+                    (f'Некорректное количество {amount} '
+                     f'ингредиента {ingr_obj}. Допустимы только '
                       'целые цифровые значения больше 1 и меньше 10000')
                 )
             validated_ingredients_obj.append(ingr_obj)
@@ -273,17 +274,18 @@ class RecipeCreateSerializer(ModelSerializer):
         пробелы вначале и в конце предложения.
         переводим имя в нижний регистр
         """
-        name = " ".join(data.split()).strip().lower()
+        name = ' '.join(data.split()).strip().lower()
         return name
 
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
-            IngredientAmount.objects.get_or_create(
+            IngredientAmount.objects.bulk_create(
                 recipe=recipe,
                 ingredients=ingredient['id'],
                 amount=ingredient['amount']
             )
 
+    @transaction.atomic
     def create(self, validated_data):
         """
         Cоздание рецепта
@@ -307,6 +309,7 @@ class RecipeCreateSerializer(ModelSerializer):
         self.create_ingredients(ingredients, recipe)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         """
         Логика работы:

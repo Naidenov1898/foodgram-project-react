@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv('../infra/.env')
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = False
@@ -13,6 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
 
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,7 +63,7 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
@@ -133,6 +133,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+EMAIL_USE_TLS = True
 
 # API config global settings
 MAX_LEN_USER_CHARFIELD = 150

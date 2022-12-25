@@ -224,7 +224,8 @@ class RecipeCreateSerializer(ModelSerializer):
         return user.carts.filter(id=obj.id).exists()
 
     def validate(self, data):
-        """Логика работы:
+        """
+        Логика работы:
         - поля name, text, cooking_time
         уже валидированы на уровне модели и доступны в data,
         мы их сохраним автоматом при обновлении или создания рецепта.

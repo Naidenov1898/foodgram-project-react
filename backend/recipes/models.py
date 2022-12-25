@@ -113,18 +113,19 @@ class Tag(Model):
         self.slug = slugify(self)
         return super(Tag, self).save(*args, **kwargs)
 
-    @admin.display 
-    def color_code(self): 
+    @admin.display
+    def color_code(self):
         """
         отображение цвета тега в админ панели 
         """
         return mark_safe(
             format_html(
                 '<span style="color: {};">{}</span>',
-                self.color, 
-                self.color, 
-                )
+                self.color,
+                self.color,
             )
+        )
+
 
 class Recipe(Model):
     name = CharField(

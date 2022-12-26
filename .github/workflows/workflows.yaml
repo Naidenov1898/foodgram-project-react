@@ -89,12 +89,20 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSWORD }}
         script: |
           cd foodgram/
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker compose stop
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker rm foodgram_frontend_1
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker rm foodgram_backend_1
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker rmi ${{ secrets.DOCKER_USER }}/foodgram_frontend
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker rmi ${{ secrets.DOCKER_USER }}/foodgram_backend
-          echo ${{ secrets.SUDO_PASS }} | sudo -S docker compose up -d
+          sudo docker compose stop
+          sudo docker compose rm web
+          sudo rm .env
+          touch .env
+          echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo POSTGRES_USER=${{ secrets.DB_POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.DB_POSTGRES_PASSWORD }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          sudo docker compose up -d
+          sudo docker compose exec -T web python manage.py makemigrations
+          sudo docker compose exec -T web python manage.py migrate
+          sudo docker compose exec -T web python manage.py collectstatic --no-input
           
   send_message:
     runs-on: ubuntu-latest

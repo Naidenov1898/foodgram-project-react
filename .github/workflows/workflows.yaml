@@ -89,8 +89,8 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSWORD }}
         script: |
           cd foodgram/
-          sudo docker compose stop
-          sudo docker compose rm web
+          sudo docker-compose stop
+          sudo docker-compose rm web
           sudo rm .env
           touch .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env

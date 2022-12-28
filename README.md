@@ -1,5 +1,5 @@
 # praktikum_new_diplom
-![foodgram ci workflow](https://github.com/Naidenov1898/foodgram-project-react/actions/workflows/workflows.yml/badge.svg)
+![foodgram ci workflow](https://github.com/Naidenov1898/foodgram-project-react/actions/workflows/workflows.yaml/badge.svg)
 
 ## Cтек технологий:
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat&logo=Python&logoColor=56C0C0&color=008080)](https://www.python.org/)

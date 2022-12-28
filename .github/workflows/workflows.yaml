@@ -48,7 +48,7 @@ jobs:
       with:
         context: backend/
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.0
+        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.1
 
   build_push_frontend_to_DockerHub:
     name: Building frontend image and pushing it to Docker Hub
@@ -71,7 +71,7 @@ jobs:
       with:
         context: frontend/
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.0
+        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.1
 
   deploy:
     runs-on: ubuntu-latest

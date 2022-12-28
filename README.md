@@ -39,7 +39,7 @@ https://sourcefood.ddns.net
 <br/>
 DEBUG=False<br/>
 SECRET_KEY=Ah!Is3g|&~fftth4e3sssqq["$8(A$]<:&&<br/>
-ALLOWED_HOSTS=127.0.0.1 10.0.1.100 localhost web foodgram.auxlink.com 95.165.26.109 backend<br/>
+ALLOWED_HOSTS=127.0.0.1 10.0.1.100 localhost<br/>
 CSRF_TRUSTED_ORIGINS = http://localhost http://127.0.0.1<br/>
 DB_ENGINE=django.db.backends.postgresql<br/>
 DB_NAME=postgres<br/>

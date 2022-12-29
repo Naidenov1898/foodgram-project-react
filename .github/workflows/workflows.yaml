@@ -48,7 +48,7 @@ jobs:
       with:
         context: backend/
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.1
+        tags: ${{ secrets.DOCKER_USER }}/backend:v1.0
 
   build_push_frontend_to_DockerHub:
     name: Building frontend image and pushing it to Docker Hub
@@ -71,7 +71,7 @@ jobs:
       with:
         context: frontend/
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/deplom:v1.1
+        tags: ${{ secrets.DOCKER_USER }}/frontend:v1.0
 
   deploy:
     runs-on: ubuntu-latest
@@ -89,6 +89,8 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSWORD }}
         script: |
           cd foodgram/
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:v1.0
           sudo docker-compose stop
           sudo docker-compose rm web
           sudo rm .env

@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: naiden1898/backend:v1.0
+    image: naiden1898/backend:v1.1
     command: >
       bash -c "python manage.py makemigrations &&
       python manage.py migrate &&

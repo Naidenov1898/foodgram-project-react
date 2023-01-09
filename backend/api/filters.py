@@ -1,4 +1,4 @@
-from api.models import Recipe, User, Ingredient
+from api.models import Ingredient, Recipe, User
 from django_filters.rest_framework import FilterSet, filters
 
 

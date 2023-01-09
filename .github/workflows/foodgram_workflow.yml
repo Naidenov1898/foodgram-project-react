@@ -7,7 +7,7 @@ on:
       - '**/README.md'
 
 jobs:
-
+# 1
   tests:
     name: PEP8 check
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/backend1:v2
+          tags: ${{ secrets.DOCKER_USER }}/backend1:v2.1
 
   build_and_push_frontend_to_docker_hub:
     name: Pushing frontend image to Docker Hub

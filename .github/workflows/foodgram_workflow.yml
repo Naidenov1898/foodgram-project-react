@@ -7,7 +7,7 @@ on:
       - '**/README.md'
 
 jobs:
-# 123
+# 123s
   tests:
     name: PEP8 check
     runs-on: ubuntu-latest
@@ -87,7 +87,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd foodgram/
             sudo rm -f .env        
             sudo touch .env
             sudo chmod 666 .env

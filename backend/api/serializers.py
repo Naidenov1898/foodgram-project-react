@@ -130,6 +130,40 @@ class CropRecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'image', 'cooking_time')
 
 
+class RecipesListSerializer(serializers.ModelSerializer):
+    """Сериализатор рецептов для метода GET."""
+    tags = TagSerializer(many=True)
+    author = CustomUserSerializer()
+    ingredients = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Recipe
+        exclude = ('pub_date', )
+        read_only_fields = (
+            'author', 'ingredients', 'is_favorited', 'is_in_shopping_cart'
+        )
+
+    def get_ingredients(self, obj):
+        queryset = obj.ingredient_amount.all()
+        return IngredientAmountSerializer(queryset, many=True).data
+
+    def get_is_favorited(self, obj):
+        user = self.context.get('request').user
+        return (
+            user.is_authenticated
+            and user.favorite_recipe.filter(recipe=obj).exists()
+        )
+
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context.get('request').user
+        return (
+            user.is_authenticated
+            and user.recipe_in_cart.filter(recipe=obj).exists()
+        )
+
+
 class FollowSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='author.id')
     email = serializers.ReadOnlyField(source='author.email')

@@ -16,7 +16,7 @@
 
 ## Сайт
 
-http://158.160.50.59/recipes
+Проект доступен по ссылке: [Foodgram](http://158.160.50.59/)
 
 
 # Foodgram - «Продуктовый помощник»
@@ -84,6 +84,9 @@ python manage.py createsuperuser<br/>
 теперь вы можете работать с админ панелью<br/>
 <you server name>/admin/<br/>
 
+# Логин и пароль
+admin
+admin
 
 # Автор backend сервисов
 [Найденов Константин](https://github.com/Naidenov1898)

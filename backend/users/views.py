@@ -1,65 +1,81 @@
-from api.pagination import LimitPageNumberPagination
-from api.serializers import FollowSerializer
+from api.paginations import CustomPagination
+from api.permissions import IsAuthorAdminOrReadOnly
+from django.db import transaction
+from django.db.models import Count
+from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework import generics, permissions, response, status
 from users.models import Follow, User
+from users.serializers import FollowSerializer, UserDetailSerializer
 
 
-class CustomUserViewSet(UserViewSet):
-    pagination_class = LimitPageNumberPagination
+class UserListViewSet(UserViewSet):
+    """Вьюсет для отображения списка пользователей."""
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+    permission_classes = (IsAuthorAdminOrReadOnly,)
+
+
+class FollowListViewSet(generics.ListAPIView):
+    """
+    Вьюсет для отображения всех имеющихся у пользователя подписок.
+    Доступность: только авторизованный пользователь.
+    """
+    serializer_class = FollowSerializer
+    pagination_class = CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return User.objects.annotate(recipe_count='recipe')
+        return User.objects.filter(
+            following__user=self.request.user
+        ).annotate(recipes_count=Count('recipes'))
 
-    @action(detail=True, permission_classes=[IsAuthenticated])
-    def subscribe(self, request, id=None):
-        user = request.user
-        author = get_object_or_404(User, id=id)
 
-        if user == author:
-            return Response({
-                'errors': 'Вы не можете подписываться на самого себя'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        if Follow.objects.filter(user=user, author=author).exists():
-            return Response({
-                'errors': 'Вы уже подписаны на данного пользователя'
-            }, status=status.HTTP_400_BAD_REQUEST)
+class FollowCreateDestroyViewSet(
+    generics.CreateAPIView,
+    generics.DestroyAPIView
+):
+    """
+    Вьюсет для создания и удаления подписок на авторов.
+    Доступность: только авторизованные пользователи.
+    """
+    serializer_class = FollowSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
-        follow = Follow.objects.create(user=user, author=author)
-        serializer = FollowSerializer(
-            follow, context={'request': request}
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        if user_id == request.user.id:
+            return response.Response(
+                'Нельзя подписаться на себя самого.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if Follow.objects.filter(
+            user=request.user,
+            author_id=user_id
+        ).exists():
+            return response.Response(
+                'Вы уже подписаны на данного автора.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        author = get_object_or_404(User, id=user_id)
+        Follow.objects.create(user=request.user, author_id=user_id)
+        return response.Response(
+            self.serializer_class(author, context={'request': request}).data,
+            status=status.HTTP_201_CREATED
         )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @subscribe.mapping.delete
-    def del_subscribe(self, request, id=None):
-        user = request.user
-        author = get_object_or_404(User, id=id)
-        if user == author:
-            return Response({
-                'errors': 'Вы не можете отписываться от самого себя'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        follow = Follow.objects.filter(user=user, author=author)
-        if follow.exists():
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        follow = Follow.objects.filter(
+            user=request.user,
+            author_id=user_id
+        )
+        if follow:
             follow.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response({
-            'errors': 'Вы уже отписались'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, permission_classes=[IsAuthenticated])
-    def subscriptions(self, request):
-        user = request.user
-        queryset = Follow.objects.filter(user=user)
-        pages = self.paginate_queryset(queryset)
-        serializer = FollowSerializer(
-            pages,
-            many=True,
-            context={'request': request}
+            return response.Response(status=status.HTTP_204_NO_CONTENT)
+        return response.Response(
+            'Вы не подписаны на данного автора.',
+            status=status.HTTP_400_BAD_REQUEST
         )
-        return self.get_paginated_response(serializer.data)

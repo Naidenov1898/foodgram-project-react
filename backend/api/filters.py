@@ -1,35 +1,57 @@
-from api.models import Recipe, User
-from django_filters.rest_framework import FilterSet, filters
+from django_filters import rest_framework as filters
+from recipes.models import Recipe
 from rest_framework.filters import SearchFilter
 
 
-# class IngredientSearchFilter(FilterSet):
-#     name = filters.CharFilter(lookup_expr='startswith')
-
-#     class Meta:
-#         model = Ingredient
-#         fields = ['name']
 class IngredientSearchFilter(SearchFilter):
+    """
+    Добавляет возможность поиска ингредиента
+    по названию, при создании рецепта.
+    """
     search_param = 'name'
 
 
-class AuthorAndTagFilter(FilterSet):
+class RecipeFilter(filters.FilterSet):
+    """Кастомный фильтр для рецептов."""
+    author = filters.CharFilter(
+        field_name='author',
+        method='get_filter_field'
+    )
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
-    author = filters.ModelChoiceFilter(queryset=User.objects.all())
-    is_favorited = filters.BooleanFilter(method='filter_is_favorited')
+    is_favorited = filters.BooleanFilter(
+        field_name='is_favorited',
+        method='get_filter_field'
+    )
     is_in_shopping_cart = filters.BooleanFilter(
-        method='filter_is_in_shopping_cart')
-
-    def filter_is_favorited(self, queryset, name, value):
-        if value and not self.request.user.is_anonymous:
-            return queryset.filter(favorites__user=self.request.user)
-        return queryset
-
-    def filter_is_in_shopping_cart(self, queryset, name, value):
-        if value and not self.request.user.is_anonymous:
-            return queryset.filter(cart__user=self.request.user)
-        return queryset
+        field_name='is_in_shopping_cart',
+        method='get_filter_field'
+    )
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'author')
+        fields = (
+            'author',
+            'tags',
+            'is_favorited',
+            'is_in_shopping_cart'
+        )
+
+    def get_filter_field(self, queryset, name, value):
+        if not value:  # and not self.request.user.is_authenticated:
+            return queryset
+        if name == 'is_favorited':
+            return queryset.filter(
+                favorite__user=self.request.user
+            )
+        if name == 'is_in_shopping_cart':
+            return queryset.filter(
+                shoppingcart__user=self.request.user
+            )
+        if name == 'author' and value == 'me':
+            return queryset.filter(
+                author=self.request.user
+            )
+        else:
+            return queryset.filter(
+                author__id=value
+            )

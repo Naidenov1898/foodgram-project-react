@@ -140,7 +140,6 @@ class RecipesListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        exclude = ('pub_date', )
         read_only_fields = (
             'author', 'ingredients', 'is_favorited', 'is_in_shopping_cart'
         )

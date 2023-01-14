@@ -10,6 +10,7 @@ from recipes.models import (
 )
 from rest_framework import serializers
 from users.serializers import UserDetailSerializer
+from .utils import description_capital_letter
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -126,14 +127,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                 {'id': ingredient_id, 'amount': amount}
             )
 
-        text_in_list: list[str] = list(self.initial_data.get('text'))
-        text_in_list[0] = text_in_list[0].capitalize()
-        text: str = ''.join(text_in_list)
-
         attrs['ingredients'] = validated_ingrediets
         attrs['name'] = str(self.initial_data.get('name')).capitalize()
-        attrs['text'] = text
-
+        attrs['text'] = self.initial_data.get('text')
+        description_capital_letter(attrs)
         return attrs
 
     def _set_amount_to_ingredient(self, recipe, ingredients):
@@ -219,8 +216,6 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context.get('request').user
-        # if not user.is_authenticated:
-        #     return False
         if user.recipe_in_cart.filter(recipe=attrs.get('recipe')).exists():
             raise serializers.ValidationError(
                 {'error': 'Данный рецепт уже добавлен в список покупок.'}

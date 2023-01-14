@@ -129,13 +129,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ingredients[name]['amount'] += amount
 
         shopping_cart_out = 'Ваш список покупок:\n'
+        shopping_cart_list: list = []
+
         for ingredient in ingredients.values():
-            shopping_cart_out += '\u00B7 {} ({}) \u2014 {}\n'.format(
-                ingredient['name'].capitalize(),
-                ingredient['measurement_unit'],
-                ingredient['amount']
-            )
-        shopping_cart_out += get_shopping_cart_footer()
+            shopping_cart_list.append(ingredient['name'])
+            shopping_cart_list.append(f"({ingredient['measure']}) - ")
+            shopping_cart_list.append(f"{str(ingredient['amount'])}\n")
+
+        shopping_cart = 'Список покупок\n'
+        shopping_cart += ''.join(shopping_cart_list)
+        print(get_shopping_cart_footer(shopping_cart))
 
         response = HttpResponse(
             shopping_cart_out, content_type='text/plain; charset=utf-8'

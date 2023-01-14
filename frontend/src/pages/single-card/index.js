@@ -83,7 +83,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
                   className={styles['single-card__link']}
                 />
               </div>
-              {(userContext || {}).id === author.id && authContext && <LinkComponent
+              {(userContext || {}).id === author.id && <LinkComponent
                 href={`${url}/edit`}
                 title='Редактировать рецепт'
                 className={styles['single-card__edit']}

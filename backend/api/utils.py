@@ -16,7 +16,7 @@ class Base64ImageField(ImageField):
 
 
 def get_shopping_cart_footer() -> str:
-    """Возвращает подвал для вывода списка покупок."""
+    """Возвращает нижний колонтитул для вывода списка покупок."""
     time_format_message: str = 'Список создан в %H:%M от %d/%m/%Y'
     separate: str = '-' * len(time_format_message)
     return separate + '\n' + datetime.now().strftime(time_format_message)
@@ -37,3 +37,10 @@ def validate_input_value(
             field_name: '{} {}.'.format(error_message, limit_value)
         })
     return value
+
+
+def description_capital_letter(text):
+    """Преобразует текст в нижний колонтитул"""
+    text[0] = text[0].capitalize()
+    result = ''.join(text)
+    return result

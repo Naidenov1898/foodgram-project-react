@@ -42,7 +42,6 @@ class FollowCreateDestroyViewSet(
     serializer_class = FollowSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    @transaction.atomic
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
         if user_id == request.user.id:

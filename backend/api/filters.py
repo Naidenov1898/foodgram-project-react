@@ -48,6 +48,6 @@ class RecipeFilter(filters.FilterSet):
 
     def filter_is_author(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
-            return queryset.filter(aythor=self.request.user)
+            return queryset.filter(author=self.request.user)
         else:
             return queryset.filter(author_id=value)

@@ -43,5 +43,5 @@ def description_capital_letter(text):
     """Преобразует текст в нижний колонтитул"""
     text = list(text)
     text[0] = text[0].capitalize()
-    result = ''.join('text')
+    result = ''.join(text)
     return result

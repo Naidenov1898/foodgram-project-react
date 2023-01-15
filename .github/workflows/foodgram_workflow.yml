@@ -58,7 +58,7 @@ jobs:
         with:
           context: frontend/
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/foodgram_frontend:latest
+          tags: ${{ secrets.DOCKER_USER }}/front-end:latest
 
 
   make_env:
@@ -104,10 +104,10 @@ jobs:
             sudo docker compose rm web -f
             sudo docker compose rm frontend -f
             sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram_backend
-            sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram_frontend
+            sudo docker rmi ${{ secrets.DOCKER_USER }}/front-end
             sudo docker pull ${{ secrets.DOCKER_USER }}/foodgram_backend:latest
-            sudo docker pull ${{ secrets.DOCKER_USER }}/foodgram_frontend:latest
-            sudo docker compose up -d 
+            sudo docker pull ${{ secrets.DOCKER_USER }}/front-end:latest
+            sudo docker compose up -d
 
   send_message:
     runs-on: ubuntu-latest

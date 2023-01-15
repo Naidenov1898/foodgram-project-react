@@ -136,8 +136,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             shopping_cart_list.append(f"{str(ingredient['amount'])}\n")
 
         shopping_cart = 'Список покупок\n'
-        shopping_cart += ''.join(shopping_cart_list)
-        get_shopping_cart_footer(shopping_cart)
+        shopping_cart += ''.join(
+            shopping_cart_list) + get_shopping_cart_footer()
 
         response = HttpResponse(
             shopping_cart, content_type='text/plain; charset=utf-8'

@@ -15,16 +15,16 @@ class RecipeFilter(filters.FilterSet):
     """Кастомный фильтр для рецептов."""
     author = filters.CharFilter(
         field_name='author',
-        method='get_filter_field'
+        method='filter_is_author'
     )
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(
         field_name='is_favorited',
-        method='get_filter_field'
+        method='filter_is_favorited'
     )
     is_in_shopping_cart = filters.BooleanFilter(
         field_name='is_in_shopping_cart',
-        method='get_filter_field'
+        method='filter_is_in_shopping_cart'
     )
 
     class Meta:

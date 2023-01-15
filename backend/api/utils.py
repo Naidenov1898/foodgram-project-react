@@ -27,7 +27,7 @@ def validate_input_value(
     field_name: str,
     error_message: str,
     limit_value: int = LIMIT_VALUE
-) -> str | int:
+):
     """
     Валидация вводимого значения.
     Вывод ошибки, в случае выхода за лимит.
@@ -41,6 +41,7 @@ def validate_input_value(
 
 def description_capital_letter(text):
     """Преобразует текст в нижний колонтитул"""
+    text = list(text)
     text[0] = text[0].capitalize()
-    result = ''.join(text)
+    result = ''.join('text')
     return result

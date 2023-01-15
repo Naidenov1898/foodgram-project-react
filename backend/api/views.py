@@ -128,7 +128,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else:
                 ingredients[name]['amount'] += amount
 
-        shopping_cart_out = 'Ваш список покупок:\n'
         shopping_cart_list: list = []
 
         for ingredient in ingredients.values():
@@ -141,7 +140,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         get_shopping_cart_footer(shopping_cart)
 
         response = HttpResponse(
-            shopping_cart_out, content_type='text/plain; charset=utf-8'
+            shopping_cart, content_type='text/plain; charset=utf-8'
         )
 
         filename = str(user) + '-shopping-list' + '.txt'

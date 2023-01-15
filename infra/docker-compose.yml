@@ -19,7 +19,7 @@ services:
       - ./.env
 
   frontend:
-    image: naiden1898/foodgram_frontend:latest
+    image: naiden1898/front-end:latest
     volumes:
       - ../frontend/:/app/result_build/
 

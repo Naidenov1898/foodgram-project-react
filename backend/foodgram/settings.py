@@ -12,7 +12,7 @@ DEFAULT_SECRET_KEY_VALUE: str = get_random_secret_key()
 
 SECRET_KEY = os.getenv('SECRET_KEY', default=DEFAULT_SECRET_KEY_VALUE)
 
-DEBUG = strtobool(os.getenv('DEBUG', 'True'))
+DEBUG = strtobool(os.getenv('DEBUG', 'False'))
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,34 +64,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-#             'NAME': os.getenv('DB_NAME', 'name-for-db'),
-#             'USER': os.getenv('POSTGRES_USER', 'postgres-username'),
-#             'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres-password'),
-#             'HOST': os.getenv('DB_HOST', 'localhost'),
-#             'PORT': os.getenv('DB_PORT', '5432')
-#         }
-#     }
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', 'name-for-db'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres-username'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres-password'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432')
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME', 'name-for-db'),
+            'USER': os.getenv('POSTGRES_USER', 'postgres-username'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres-password'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432')
+        }
+    }
 
 AUTH_USER_MODEL = 'users.User'
 

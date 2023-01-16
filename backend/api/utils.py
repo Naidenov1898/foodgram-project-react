@@ -40,7 +40,7 @@ def validate_input_value(
 
 
 def description_capital_letter(text):
-    """Преобразует текст в нижний колонтитул"""
+    """Преобразует первую букву в верхний регистр"""
     text = list(text)
     text[0] = text[0].capitalize()
     result = ''.join(text)
